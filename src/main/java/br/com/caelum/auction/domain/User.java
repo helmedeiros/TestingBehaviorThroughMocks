@@ -1,5 +1,8 @@
 package br.com.caelum.auction.domain;
 
+/**
+ * Represents an auction bidders.
+ */
 public class User {
 
 	private int id;

@@ -1,5 +1,8 @@
 package br.com.caelum.auction.domain;
 
+/**
+ * Represents an offer of a price, esp. at an auction.
+ */
 public class Bid {
 
 	private User user;

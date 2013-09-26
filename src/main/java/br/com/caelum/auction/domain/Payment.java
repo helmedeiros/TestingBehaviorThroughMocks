@@ -2,6 +2,9 @@ package br.com.caelum.auction.domain;
 
 import java.util.Calendar;
 
+/**
+ * The payment of an Auction.
+ */
 public class Payment {
 
 	private double amount;
