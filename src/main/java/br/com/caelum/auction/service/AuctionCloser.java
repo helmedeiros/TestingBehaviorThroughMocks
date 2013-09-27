@@ -9,10 +9,14 @@ import br.com.caelum.auction.infra.dao.AuctionDao;
 public class AuctionCloser {
 
 	private int total = 0;
+    private AuctionDao dao;
 
-	public void close() {
-		AuctionDao dao = new AuctionDao();
-		List<Auction> allCurrentAuctions = dao.actuals();
+    public AuctionCloser(AuctionDao dao) {
+        this.dao = dao;
+    }
+
+    public void close() {
+        List<Auction> allCurrentAuctions = dao.actuals();
 
 		for (Auction auction : allCurrentAuctions) {
 			if (startedLastWeek(auction)) {
