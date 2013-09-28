@@ -5,6 +5,7 @@ import br.com.caelum.auction.domain.Auction;
 import br.com.caelum.auction.infra.dao.AuctionDao;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -69,6 +70,16 @@ public class AuctionCloserTest {
         assertThat(openAuctionFromYesterday.isClosed(), equalTo(IS_NOT_CLOSED));
         assertThat(openAuctionFromBeforeYesterday.isClosed(), equalTo(IS_NOT_CLOSED));
 
+    }
+
+    @Test public void shouldDoNothingWhenNoOpenAuctionExists() throws Exception {
+        final AuctionDao mockDAO = mock(AuctionDao.class);
+        when(mockDAO.actuals()).thenReturn(new ArrayList<Auction>());
+
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDAO);
+        auctionCloser.close();
+
+        assertThat(auctionCloser.getClosedTotal(), equalTo(0));
     }
 
     private Auction createAuctionAndAssertItIs(final String auctionName, final Calendar onDate, final boolean closed) {
