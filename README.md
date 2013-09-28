@@ -18,3 +18,5 @@ Below are all tags, and what is being expected to be done.
 1. Create AuctionCloserTest class and write a test that ensures that the class closes auctions that began more than a week ago. Start simulating behaviors like the DAO involved (AuctionDao daoMock = mock (AuctionDao.class). It's a good practice to introduce some dependencies passing than as a parameter in their constructor.
 
 2. Now is time to cover the other point of this scenario. Review the AuctionCloserTest, write a test that ensures that the class doesn't closes auctions that began less than a week ago.
+
+3. What happens when there's no auction open to be closed. Let's use the mocks to test this?
