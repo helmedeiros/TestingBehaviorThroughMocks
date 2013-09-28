@@ -5,9 +5,9 @@ import java.util.List;
 
 import br.com.caelum.auction.domain.Auction;
 
-public class AuctionDaoFake {
+public class AuctionDaoFake implements AuctionRepository {
 
-	private static List<Auction> auctions = new ArrayList<Auction>();;
+	private static List<Auction> auctions = new ArrayList<Auction>();
 	
 	public void save(Auction auction) {
 		auctions.add(auction);
@@ -22,15 +22,15 @@ public class AuctionDaoFake {
 
 		return filtered;
 	}
-	
-	public List<Auction> correntes() {
+
+    public List<Auction> actuals() {
 		
-		List<Auction> filtrados = new ArrayList<Auction>();
+		List<Auction> filtered = new ArrayList<Auction>();
 		for(Auction auction : auctions) {
-			if(!auction.isClosed()) filtrados.add(auction);
+			if(!auction.isClosed()) filtered.add(auction);
 		}
 
-		return filtrados;
+		return filtered;
 	}
 	
 	public void update(Auction auction) { /* do nothing! */ }
