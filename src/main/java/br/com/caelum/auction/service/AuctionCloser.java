@@ -1,17 +1,17 @@
 package br.com.caelum.auction.service;
 
+import br.com.caelum.auction.domain.Auction;
+import br.com.caelum.auction.infra.dao.AuctionRepository;
+
 import java.util.Calendar;
 import java.util.List;
-
-import br.com.caelum.auction.domain.Auction;
-import br.com.caelum.auction.infra.dao.AuctionDao;
 
 public class AuctionCloser {
 
 	private int total = 0;
-    private AuctionDao dao;
+    private AuctionRepository dao;
 
-    public AuctionCloser(AuctionDao dao) {
+    public AuctionCloser(AuctionRepository dao) {
         this.dao = dao;
     }
 

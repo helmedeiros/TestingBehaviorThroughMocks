@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class AuctionDao {
+public class AuctionDao implements AuctionRepository {
 
 	private Connection connection;
 
@@ -28,7 +28,8 @@ public class AuctionDao {
 		return c;
 	}
 
-	public void save(Auction auction) {
+	@Override
+    public void save(Auction auction) {
 		try {
 			String sql = "INSERT INTO AUCTION (DESCRIPTION, DATE, CLOSED) VALUES (?,?,?);";
 			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -63,11 +64,13 @@ public class AuctionDao {
 		
 	}
 	
-	public List<Auction> closeds() {
+	@Override
+    public List<Auction> closeds() {
 		return byClosed(true);
 	}
 	
-	public List<Auction> actuals() {
+	@Override
+    public List<Auction> actuals() {
 		return byClosed(false);
 	}
 	
@@ -109,7 +112,8 @@ public class AuctionDao {
 		}
 	}
 
-	public void update(Auction auction) {
+	@Override
+    public void update(Auction auction) {
 		
 		try {
 			String sql = "UPDATE AUCTION SET DESCRIPTION=?, DATE=?, CLOSED=? WHERE ID = ?;";
@@ -124,6 +128,4 @@ public class AuctionDao {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public int x() { return 10; }
 }
