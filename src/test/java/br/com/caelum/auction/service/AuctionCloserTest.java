@@ -2,7 +2,7 @@ package br.com.caelum.auction.service;
 
 import br.com.caelum.auction.builder.AuctionBuilder;
 import br.com.caelum.auction.domain.Auction;
-import br.com.caelum.auction.infra.dao.AuctionDao;
+import br.com.caelum.auction.infra.dao.AuctionRepository;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class AuctionCloserTest {
     public static final boolean IS_CLOSED = true;
 
     @Test public void shouldCloseAuctionsBeganMoreThanWeekAgo() throws Exception {
-        AuctionDao auctionDaoMock = mock(AuctionDao.class);
+        AuctionRepository auctionDaoMock = mock(AuctionRepository.class);
 
         Calendar twoWeeksAgoDate = giveMeDateFrom(FOURTEEN_DAYS_AGO);
         Calendar oneWeekAgo = giveMeDateFrom(SEVEN_DAYS_AGO);
@@ -60,7 +60,7 @@ public class AuctionCloserTest {
         final Auction openAuctionFromYesterday = createAuctionAndAssertItIs(VALID_AUCTION_NAME, yesterday, IS_NOT_CLOSED);
         final Auction openAuctionFromBeforeYesterday = createAuctionAndAssertItIs(VALID_AUCTION_NAME, beforeYesterday, IS_NOT_CLOSED);
 
-        AuctionDao mockDao = mock(AuctionDao.class);
+        AuctionRepository mockDao = mock(AuctionRepository.class);
         when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromYesterday, openAuctionFromBeforeYesterday));
 
         final AuctionCloser auctionCloser = new AuctionCloser(mockDao);
@@ -73,7 +73,7 @@ public class AuctionCloserTest {
     }
 
     @Test public void shouldDoNothingWhenNoOpenAuctionExists() throws Exception {
-        final AuctionDao mockDAO = mock(AuctionDao.class);
+        final AuctionRepository mockDAO = mock(AuctionRepository.class);
         when(mockDAO.actuals()).thenReturn(new ArrayList<Auction>());
 
         final AuctionCloser auctionCloser = new AuctionCloser(mockDAO);
