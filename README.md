@@ -20,3 +20,5 @@ Below are all tags, and what is being expected to be done.
 2. Now is time to cover the other point of this scenario. Review the AuctionCloserTest, write a test that ensures that the class doesn't closes auctions that began less than a week ago.
 
 3. What happens when there's no auction open to be closed. Let's use the mocks to test this?
+
+4. Most of mock frameworks only mock based on interfaces. Mockito also works with class, are we missing something mocking our DAO class directly? And if this implementation had changes, what happens with our tests? Could we fix that? Extract a common interface for both AuctionDao an AuctionDaoFake, and changed it all over our tests to use this interface instead.
