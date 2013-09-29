@@ -26,3 +26,5 @@ Below are all tags, and what is being expected to be done.
 ### v2.0 - Ensuring that the methods were invoked
 
 #### The Mockito framework also allows us to check whether and how many times a particular method is called. This could be done using the pair verify() and times(). Let's see how to work more this feature. It's very important to remember that our tests should focus only on the expected behaviour, not the current implementation. Use the verify only im parts of your could that are actually part of the business rules. Take care to not break the encapsulation and end up with really brittle tests that have to be changed all the time.
+
+1. Until then, we did not know or had been a major part of our business rule, internalized within the AuctionCloser. Where an auction is closed that was open we should store in the database, so that this information does not suffer the same auction a new bid closing. Let's write a test that ensures that the method update is invoked by the class AuctionCloser. To do this, use the verify ().
