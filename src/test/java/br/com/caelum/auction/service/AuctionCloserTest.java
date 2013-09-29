@@ -12,8 +12,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link AuctionCloser}
@@ -80,6 +79,19 @@ public class AuctionCloserTest {
         auctionCloser.close();
 
         assertThat(auctionCloser.getClosedTotal(), equalTo(0));
+    }
+
+    @Test public void shouldUpdateTheOpenAuctionAfterClosedIt() throws Exception {
+        final Auction openAuctionFromLastWeek = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(SEVEN_DAYS_AGO), IS_NOT_CLOSED);
+        final Auction openAuctionFromYesterday = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(ONE_DAY_AGO), IS_NOT_CLOSED);
+
+        final AuctionRepository mockDao = mock(AuctionRepository.class);
+        when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromLastWeek, openAuctionFromYesterday));
+
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao);
+        auctionCloser.close();
+
+        verify(mockDao, times(1)).update(openAuctionFromLastWeek);
     }
 
     private Auction createAuctionAndAssertItIs(final String auctionName, final Calendar onDate, final boolean closed) {
