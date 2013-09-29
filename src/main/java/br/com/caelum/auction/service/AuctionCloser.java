@@ -9,10 +9,12 @@ import java.util.List;
 public class AuctionCloser {
 
 	private int total = 0;
-    private AuctionRepository dao;
+    private final AuctionRepository dao;
+    private final MailSender postman;
 
-    public AuctionCloser(AuctionRepository dao) {
+    public AuctionCloser(final AuctionRepository dao, final MailSender postman) {
         this.dao = dao;
+        this.postman = postman;
     }
 
     public void close() {
@@ -23,6 +25,7 @@ public class AuctionCloser {
 				auction.close();
 				total++;
 				dao.update(auction);
+                postman.send(auction);
 			}
 		}
 	}

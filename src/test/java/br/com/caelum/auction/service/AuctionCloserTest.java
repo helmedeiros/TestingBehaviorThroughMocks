@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
  */
 public class AuctionCloserTest {
 
+    private final MailSender postman = mock(MailSender.class);
     public static final String VALID_AUCTION_NAME = "PLAYSTATION 3";
     public static final int SEVEN_DAYS_AGO = -7;
     public static final int FOURTEEN_DAYS_AGO = -14;
@@ -42,7 +43,7 @@ public class AuctionCloserTest {
         List<Auction> openAuctionList = Arrays.asList(openAuction1, openAuction2);
         when(auctionDaoMock.actuals()).thenReturn(openAuctionList);
 
-        final AuctionCloser auctionCloser = new AuctionCloser(auctionDaoMock);
+        final AuctionCloser auctionCloser = new AuctionCloser(auctionDaoMock, postman);
 
         auctionCloser.close();
 
@@ -62,7 +63,7 @@ public class AuctionCloserTest {
         AuctionRepository mockDao = mock(AuctionRepository.class);
         when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromYesterday, openAuctionFromBeforeYesterday));
 
-        final AuctionCloser auctionCloser = new AuctionCloser(mockDao);
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postman);
         auctionCloser.close();
 
         assertThat(auctionCloser.getClosedTotal(), equalTo(0));
@@ -77,7 +78,7 @@ public class AuctionCloserTest {
         final AuctionRepository mockDAO = mock(AuctionRepository.class);
         when(mockDAO.actuals()).thenReturn(new ArrayList<Auction>());
 
-        final AuctionCloser auctionCloser = new AuctionCloser(mockDAO);
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDAO, postman);
         auctionCloser.close();
 
         assertThat(auctionCloser.getClosedTotal(), equalTo(0));
@@ -91,7 +92,7 @@ public class AuctionCloserTest {
         final AuctionRepository mockDao = mock(AuctionRepository.class);
         when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromLastWeek, openAuctionFromYesterday, openAuctionFromTwoWeeksAgo));
 
-        final AuctionCloser auctionCloser = new AuctionCloser(mockDao);
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postman);
         auctionCloser.close();
 
         verify(mockDao, times(1)).update(openAuctionFromLastWeek);
