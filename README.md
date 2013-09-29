@@ -32,3 +32,5 @@ Below are all tags, and what is being expected to be done.
 2. For some cases, only check if the method was called could be insufficient, for those cases we'll use of another mockito's auxiliary method, times(). Change the previous made test to check with two different auctions if each of them was updated only once.
 
 3. Another variation that could be used with Mockito's times method is never(). Let's improve our old test that verify that no auction until seven days ago should be updated, using the pair times and never.
+
+4. A new functional requirement should be implemented. After an Auction had been closed we need to send an email about that change. We don't have any clue about how we'll implement that but we've already know that a change on AuctionCloser will happened. Implement an interface called MailSender, that will be injected through the constructor and will have the method send, that will be called after update the closed Auction. Change all AuctionCloser's tests to deal with the new constructor change.
