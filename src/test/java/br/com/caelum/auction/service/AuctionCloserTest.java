@@ -69,6 +69,8 @@ public class AuctionCloserTest {
         assertThat(openAuctionFromYesterday.isClosed(), equalTo(IS_NOT_CLOSED));
         assertThat(openAuctionFromBeforeYesterday.isClosed(), equalTo(IS_NOT_CLOSED));
 
+        verify(mockDao, never()).update(openAuctionFromYesterday);
+        verify(mockDao, never()).update(openAuctionFromBeforeYesterday);
     }
 
     @Test public void shouldDoNothingWhenNoOpenAuctionExists() throws Exception {
