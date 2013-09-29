@@ -30,3 +30,5 @@ Below are all tags, and what is being expected to be done.
 1. Until then, we did not know or had been a major part of our business rule, internalized within the AuctionCloser. Where an auction is closed that was open we should store in the database, so that this information does not suffer the same auction a new bid closing. Let's write a test that ensures that the method update is invoked by the class AuctionCloser. To do this, use the verify ().
 
 2. For some cases, only check if the method was called could be insufficient, for those cases we'll use of another mockito's auxiliary method, times(). Change the previous made test to check with two different auctions if each of them was updated only once.
+
+3. Another variation that could be used with Mockito's times method is never(). Let's improve our old test that verify that no auction until seven days ago should be updated, using the pair times and never.
