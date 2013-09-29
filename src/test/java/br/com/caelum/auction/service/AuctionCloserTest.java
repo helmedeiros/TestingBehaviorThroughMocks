@@ -84,14 +84,16 @@ public class AuctionCloserTest {
     @Test public void shouldUpdateTheOpenAuctionAfterClosedIt() throws Exception {
         final Auction openAuctionFromLastWeek = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(SEVEN_DAYS_AGO), IS_NOT_CLOSED);
         final Auction openAuctionFromYesterday = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(ONE_DAY_AGO), IS_NOT_CLOSED);
+        final Auction openAuctionFromTwoWeeksAgo = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(FOURTEEN_DAYS_AGO), IS_NOT_CLOSED);
 
         final AuctionRepository mockDao = mock(AuctionRepository.class);
-        when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromLastWeek, openAuctionFromYesterday));
+        when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromLastWeek, openAuctionFromYesterday, openAuctionFromTwoWeeksAgo));
 
         final AuctionCloser auctionCloser = new AuctionCloser(mockDao);
         auctionCloser.close();
 
         verify(mockDao, times(1)).update(openAuctionFromLastWeek);
+        verify(mockDao, times(1)).update(openAuctionFromTwoWeeksAgo);
     }
 
     private Auction createAuctionAndAssertItIs(final String auctionName, final Calendar onDate, final boolean closed) {
