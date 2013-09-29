@@ -3,6 +3,7 @@ package br.com.caelum.auction.service;
 import br.com.caelum.auction.builder.AuctionBuilder;
 import br.com.caelum.auction.domain.Auction;
 import br.com.caelum.auction.infra.dao.AuctionRepository;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import static org.mockito.Mockito.*;
  */
 public class AuctionCloserTest {
 
-    private final MailSender postman = mock(MailSender.class);
     public static final String VALID_AUCTION_NAME = "PLAYSTATION 3";
     public static final int SEVEN_DAYS_AGO = -7;
     public static final int FOURTEEN_DAYS_AGO = -14;
@@ -30,6 +30,14 @@ public class AuctionCloserTest {
     public static final int TWO_DAYS_AGO = -2;
     public static final boolean IS_NOT_CLOSED = false;
     public static final boolean IS_CLOSED = true;
+    private MailSender postmanMock;
+    private AuctionRepository mockDao;
+
+    @Before
+    public void setUp() throws Exception {
+        mockDao = mock(AuctionRepository.class);
+        postmanMock = mock(MailSender.class);
+    }
 
     @Test public void shouldCloseAuctionsBeganMoreThanWeekAgo() throws Exception {
         AuctionRepository auctionDaoMock = mock(AuctionRepository.class);
@@ -43,7 +51,7 @@ public class AuctionCloserTest {
         List<Auction> openAuctionList = Arrays.asList(openAuction1, openAuction2);
         when(auctionDaoMock.actuals()).thenReturn(openAuctionList);
 
-        final AuctionCloser auctionCloser = new AuctionCloser(auctionDaoMock, postman);
+        final AuctionCloser auctionCloser = new AuctionCloser(auctionDaoMock, postmanMock);
 
         auctionCloser.close();
 
@@ -63,7 +71,7 @@ public class AuctionCloserTest {
         AuctionRepository mockDao = mock(AuctionRepository.class);
         when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromYesterday, openAuctionFromBeforeYesterday));
 
-        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postman);
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
         auctionCloser.close();
 
         assertThat(auctionCloser.getClosedTotal(), equalTo(0));
@@ -78,7 +86,7 @@ public class AuctionCloserTest {
         final AuctionRepository mockDAO = mock(AuctionRepository.class);
         when(mockDAO.actuals()).thenReturn(new ArrayList<Auction>());
 
-        final AuctionCloser auctionCloser = new AuctionCloser(mockDAO, postman);
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDAO, postmanMock);
         auctionCloser.close();
 
         assertThat(auctionCloser.getClosedTotal(), equalTo(0));
@@ -89,14 +97,24 @@ public class AuctionCloserTest {
         final Auction openAuctionFromYesterday = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(ONE_DAY_AGO), IS_NOT_CLOSED);
         final Auction openAuctionFromTwoWeeksAgo = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(FOURTEEN_DAYS_AGO), IS_NOT_CLOSED);
 
-        final AuctionRepository mockDao = mock(AuctionRepository.class);
         when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromLastWeek, openAuctionFromYesterday, openAuctionFromTwoWeeksAgo));
 
-        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postman);
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
         auctionCloser.close();
 
         verify(mockDao, times(1)).update(openAuctionFromLastWeek);
         verify(mockDao, times(1)).update(openAuctionFromTwoWeeksAgo);
+    }
+
+    @Test public void shouldSendAnAuctionAfterClosedIt() throws Exception {
+        final Auction openAuctionFromLastWeek = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(SEVEN_DAYS_AGO), IS_NOT_CLOSED);
+
+        when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromLastWeek));
+
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
+        auctionCloser.close();
+
+        verify(postmanMock).send(openAuctionFromLastWeek);
     }
 
     private Auction createAuctionAndAssertItIs(final String auctionName, final Calendar onDate, final boolean closed) {
