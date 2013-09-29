@@ -5,6 +5,7 @@ import br.com.caelum.auction.domain.Auction;
 import br.com.caelum.auction.infra.dao.AuctionRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -115,6 +116,19 @@ public class AuctionCloserTest {
         auctionCloser.close();
 
         verify(postmanMock).send(openAuctionFromLastWeek);
+    }
+
+    @Test public void shouldSendAnAuctionOnlyAfterItHasBeenUpdated() throws Exception {
+        final Auction openAuctionFromLastWeek = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(SEVEN_DAYS_AGO), IS_NOT_CLOSED);
+
+        when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromLastWeek));
+
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
+        auctionCloser.close();
+
+        final InOrder inOrder = inOrder(mockDao, postmanMock);
+        inOrder.verify(mockDao, times(1)).update(openAuctionFromLastWeek);
+        inOrder.verify(postmanMock).send(openAuctionFromLastWeek);
     }
 
     private Auction createAuctionAndAssertItIs(final String auctionName, final Calendar onDate, final boolean closed) {
