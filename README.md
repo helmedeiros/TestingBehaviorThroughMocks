@@ -26,3 +26,13 @@ Below are all tags, and what is being expected to be done.
 ### v2.0 - Ensuring that the methods were invoked
 
 #### The Mockito framework also allows us to check whether and how many times a particular method is called. This could be done using the pair verify() and times(). Let's see how to work more this feature. It's very important to remember that our tests should focus only on the expected behaviour, not the current implementation. Use the verify only im parts of your could that are actually part of the business rules. Take care to not break the encapsulation and end up with really brittle tests that have to be changed all the time.
+
+1. Until then, we did not know or had been a major part of our business rule, internalized within the AuctionCloser. Where an auction is closed that was open we should store in the database, so that this information does not suffer the same auction a new bid closing. Let's write a test that ensures that the method update is invoked by the class AuctionCloser. To do this, use the verify ().
+
+2. For some cases, only check if the method was called could be insufficient, for those cases we'll use of another mockito's auxiliary method, times(). Change the previous made test to check with two different auctions if each of them was updated only once.
+
+3. Another variation that could be used with Mockito's times method is never(). Let's improve our old test that verify that no auction until seven days ago should be updated, using the pair times and never.
+
+4. A new functional requirement should be implemented. After an Auction had been closed we need to send an email about that change. We don't have any clue about how we'll implement that but we've already know that a change on AuctionCloser will happened. Implement an interface called MailSender, that will be injected through the constructor and will have the method send, that will be called after update the closed Auction. Change all AuctionCloser's tests to deal with the new constructor change.
+
+5. Once we've created and changed our old tests, let's cover the new logic piece. Add a new test that ensure that a MailSender will deal to send the auction after it has been closed and updated in database. Check out the InOrder class, existing inside the Mockito, it could be helpful in our test scenario.
