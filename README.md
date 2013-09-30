@@ -36,3 +36,7 @@ Below are all tags, and what is being expected to be done.
 4. A new functional requirement should be implemented. After an Auction had been closed we need to send an email about that change. We don't have any clue about how we'll implement that but we've already know that a change on AuctionCloser will happened. Implement an interface called MailSender, that will be injected through the constructor and will have the method send, that will be called after update the closed Auction. Change all AuctionCloser's tests to deal with the new constructor change.
 
 5. Once we've created and changed our old tests, let's cover the new logic piece. Add a new test that ensure that a MailSender will deal to send the auction after it has been closed and updated in database. Check out the InOrder class, existing inside the Mockito, it could be helpful in our test scenario.
+
+### v3.0 - Mocks that throw exceptions
+
+#### Among our functional and cross-functional requirements, there is the recovering from failures, that as well as several others that base their logic in triggers fired for errors or failures of our systems. Thinking about test-driven development, we should always write tests before develop the solution. For this case, we'll need to simulate errors, to develop and test the new code. The Mockito framework provide some tools to do that, let's see below.
