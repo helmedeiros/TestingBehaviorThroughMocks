@@ -164,6 +164,22 @@ public class AuctionCloserTest {
         verify(postmanMock).send(openAuctionFromLastWeek);
     }
 
+    @Test public void shouldNeverSendAnEmailWhenErrorOccursInThePreviousUpdate() throws Exception {
+        final Auction openAuctionFromLastWeek = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(SEVEN_DAYS_AGO), IS_NOT_CLOSED);
+        final Auction openAuctionFromTwoWeeksAgo = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(FOURTEEN_DAYS_AGO), IS_NOT_CLOSED);
+
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
+
+        when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromTwoWeeksAgo, openAuctionFromLastWeek));
+        doThrow(new IllegalStateException()).when(mockDao).update(openAuctionFromTwoWeeksAgo);
+        doThrow(new IllegalStateException()).when(mockDao).update(openAuctionFromLastWeek);
+
+        auctionCloser.close();
+
+        verify(postmanMock, never()).send(openAuctionFromTwoWeeksAgo);
+        verify(postmanMock, never()).send(openAuctionFromLastWeek);
+    }
+
     private Auction createAuctionAndAssertItIs(final String auctionName, final Calendar onDate, final boolean closed) {
         final Auction openAuctionFromYesterday = new AuctionBuilder().to(auctionName).onDate(onDate).build();
         assertThat(openAuctionFromYesterday.isClosed(), equalTo(closed));
