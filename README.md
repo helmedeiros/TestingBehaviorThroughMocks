@@ -44,3 +44,5 @@ Below are all tags, and what is being expected to be done.
 1. The AuctionCloser should not stop running when an exception is thrown by our DAO, he should try to process the next auction anyway. To do so, make the necessary changes in the method close() and write a test to ensure this behavior. Take a look into Mockito's method doThrow to simulate the exception.
 
 2. Now ensures that if the exception was thrown by a MailSender our AuctionCloser still works the same way.
+
+3. Now, take any of the previous tests and make the mock throw an Exception instead of IllegalStateException.
