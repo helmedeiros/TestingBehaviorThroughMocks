@@ -3,6 +3,7 @@ package br.com.caelum.auction.service;
 import br.com.caelum.auction.builder.AuctionBuilder;
 import br.com.caelum.auction.domain.Auction;
 import br.com.caelum.auction.infra.dao.AuctionRepository;
+import br.com.caelum.auction.infra.mail.MailSender;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;

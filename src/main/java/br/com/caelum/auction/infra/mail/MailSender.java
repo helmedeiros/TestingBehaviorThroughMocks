@@ -1,4 +1,4 @@
-package br.com.caelum.auction.service;
+package br.com.caelum.auction.infra.mail;
 
 import br.com.caelum.auction.domain.Auction;
 
