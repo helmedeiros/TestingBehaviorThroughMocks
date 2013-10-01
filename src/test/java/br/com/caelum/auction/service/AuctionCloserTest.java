@@ -139,7 +139,7 @@ public class AuctionCloserTest {
         final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
 
         when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromTwoWeeksAgo, openAuctionFromLastWeek));
-        doThrow(IllegalStateException.class).when(mockDao).update(openAuctionFromTwoWeeksAgo);
+        doThrow(new IllegalStateException()).when(mockDao).update(openAuctionFromTwoWeeksAgo);
 
         auctionCloser.close();
 
@@ -155,7 +155,7 @@ public class AuctionCloserTest {
         final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
 
         when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromTwoWeeksAgo, openAuctionFromLastWeek));
-        doThrow(Exception.class).when(postmanMock).send(openAuctionFromTwoWeeksAgo);
+        doThrow(new IllegalStateException()).when(postmanMock).send(openAuctionFromTwoWeeksAgo);
 
         auctionCloser.close();
 
