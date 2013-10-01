@@ -23,10 +23,14 @@ public class AuctionCloser {
 
 		for (Auction auction : allCurrentAuctions) {
 			if (startedLastWeek(auction)) {
-				auction.close();
-				total++;
-				dao.update(auction);
-                postman.send(auction);
+				try{
+                    auction.close();
+                    total++;
+                    dao.update(auction);
+                    postman.send(auction);
+                }catch (Exception e){
+                    // Add logs and future counter to have the errors statistic.
+                }
 			}
 		}
 	}
