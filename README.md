@@ -42,3 +42,5 @@ Below are all tags, and what is being expected to be done.
 #### Among our functional and cross-functional requirements, there is the recovering from failures, that as well as several others that base their logic in triggers fired for errors or failures of our systems. Thinking about test-driven development, we should always write tests before develop the solution. For this case, we'll need to simulate errors, to develop and test the new code. The Mockito framework provide some tools to do that, let's see below.
 
 1. The AuctionCloser should not stop running when an exception is thrown by our DAO, he should try to process the next auction anyway. To do so, make the necessary changes in the method close() and write a test to ensure this behavior. Take a look into Mockito's method doThrow to simulate the exception.
+
+2. Now ensures that if the exception was thrown by a MailSender our AuctionCloser still works the same way.
