@@ -132,7 +132,7 @@ public class AuctionCloserTest {
         inOrder.verify(postmanMock).send(openAuctionFromLastWeek);
     }
 
-    @Test public void shouldProcessNextAuctionEvenWhenErrorOccursIThePreviousOne() throws Exception {
+    @Test public void shouldProcessNextAuctionEvenWhenErrorOccursInThePreviousUpdate() throws Exception {
         final Auction openAuctionFromLastWeek = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(SEVEN_DAYS_AGO), IS_NOT_CLOSED);
         final Auction openAuctionFromTwoWeeksAgo = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(FOURTEEN_DAYS_AGO), IS_NOT_CLOSED);
 
@@ -144,6 +144,22 @@ public class AuctionCloserTest {
         auctionCloser.close();
 
         verify(postmanMock, never()).send(openAuctionFromTwoWeeksAgo);
+        verify(mockDao).update(openAuctionFromLastWeek);
+        verify(postmanMock).send(openAuctionFromLastWeek);
+    }
+
+    @Test public void shouldProcessNextAuctionEvenWhenErrorOccursInThePreviousMailSend() throws Exception {
+        final Auction openAuctionFromLastWeek = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(SEVEN_DAYS_AGO), IS_NOT_CLOSED);
+        final Auction openAuctionFromTwoWeeksAgo = createAuctionAndAssertItIs(VALID_AUCTION_NAME, giveMeDateFrom(FOURTEEN_DAYS_AGO), IS_NOT_CLOSED);
+
+        final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
+
+        when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromTwoWeeksAgo, openAuctionFromLastWeek));
+        doThrow(IllegalStateException.class).when(postmanMock).send(openAuctionFromTwoWeeksAgo);
+
+        auctionCloser.close();
+
+        verify(mockDao).update(openAuctionFromTwoWeeksAgo);
         verify(mockDao).update(openAuctionFromLastWeek);
         verify(postmanMock).send(openAuctionFromLastWeek);
     }
