@@ -45,4 +45,4 @@ Below are all tags, and what is being expected to be done.
 
 2. Now ensures that if the exception was thrown by a MailSender our AuctionCloser still works the same way.
 
-3. Now, take any of the previous tests and make the mock throw an Exception instead of IllegalStateException.
+3. Now, take any of the previous tests and make the mock throw an Exception instead of IllegalStateException. Now run the test. What happens? Does it make sense?
