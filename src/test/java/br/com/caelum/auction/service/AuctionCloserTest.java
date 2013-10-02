@@ -159,8 +159,7 @@ public class AuctionCloserTest {
 
         auctionCloser.close();
 
-        verify(mockDao).update(openAuctionFromTwoWeeksAgo);
-        verify(mockDao).update(openAuctionFromLastWeek);
+        verify(mockDao, times(2)).update(any(Auction.class));
         verify(postmanMock).send(openAuctionFromLastWeek);
     }
 
@@ -171,13 +170,11 @@ public class AuctionCloserTest {
         final AuctionCloser auctionCloser = new AuctionCloser(mockDao, postmanMock);
 
         when(mockDao.actuals()).thenReturn(Arrays.asList(openAuctionFromTwoWeeksAgo, openAuctionFromLastWeek));
-        doThrow(new IllegalStateException()).when(mockDao).update(openAuctionFromTwoWeeksAgo);
-        doThrow(new IllegalStateException()).when(mockDao).update(openAuctionFromLastWeek);
+        doThrow(new IllegalStateException()).when(mockDao).update(any(Auction.class));
 
         auctionCloser.close();
 
-        verify(postmanMock, never()).send(openAuctionFromTwoWeeksAgo);
-        verify(postmanMock, never()).send(openAuctionFromLastWeek);
+        verify(postmanMock, never()).send(any(Auction.class));
     }
 
     private Auction createAuctionAndAssertItIs(final String auctionName, final Calendar onDate, final boolean closed) {
