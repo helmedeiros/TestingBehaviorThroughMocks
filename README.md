@@ -48,3 +48,5 @@ Below are all tags, and what is being expected to be done.
 3. Now, take any of the previous tests and make the mock throw an Exception instead of IllegalStateException. Now run the test. What happens? Does it make sense?
 
 4. Should never send any email, if all Auctions had throwable to be updated. Create a test to verify this.
+
+5. Some of our test were duplicated with parts of codes that could be generalized. Let's try some of Mockito's matchers to turn our when() request more generics.
