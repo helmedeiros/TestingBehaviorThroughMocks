@@ -50,3 +50,7 @@ b
 4. Should never send any email, if all Auctions had throwable to be updated. Create a test to verify this.
 
 5. Some of our test were duplicated with parts of codes that could be generalized. Let's try some of Mockito's matchers to turn our when() request more generics.
+
+### v4.0 - Capturing arguments received by Mock
+
+#### Know to much about what was being tested could be not cool and break the encapsulation, but sometimes it's really necessary according to your testing process and granularity. For those cases, the Mockito framework provide us a captor called ArgumentCaptor that enable us to know not only if a method was called, but mainly what it's returning so we could test. Many authors defend that only public class should be test, but sometimes it isn't not enough.
