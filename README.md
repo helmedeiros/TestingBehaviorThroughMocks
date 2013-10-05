@@ -58,3 +58,5 @@ b
 1. We have a new feature, after we'd closed an Auction we have to receive its payment. Create a new class Payment, that receives the amount and date of it and keep it. Let's also create a new payment repository with a save(Payment payment) method. After that we'll need to create a PaymentManager class, with a method manage() that get all closed Auctions, and creates a payment for each one of them based on the higher bid (we can use an Auctioneer to evaluate and return the higher bid amount).
 
 2. Let's test our PaymentManager. Write a test to ensure that the payment amount generated is equal to the highest bidder evaluated by the Auctioneer. Note that the generated charge is not returned to the test. To be able to test, we need to use the Mockito's ArgumentCaptor.
+
+3. In the previous test you could mock or not the Auctioneer. Why should you mock it? Think about and chose the best way to test it.
