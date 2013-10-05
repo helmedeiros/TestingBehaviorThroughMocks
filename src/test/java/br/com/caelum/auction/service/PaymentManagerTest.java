@@ -31,11 +31,15 @@ public class PaymentManagerTest {
     private static final User ANOTHER_VALID_USER = new User(2, "Bill");
     private static final double LOWER_BID_AMOUNT = 1;
     public static final double HIGHER_BID_AMOUNT = 1000.0;
-    private Auctioneer auctioneer;
+    private Auctioneer auctioneerMock;
+    private PaymentRepository paymentRepositoryMock;
+    private AuctionRepository auctionRepositoryMock;
 
     @Before
     public void setUp() throws Exception {
-        auctioneer = new Auctioneer();
+        auctioneerMock = mock(Auctioneer.class);
+        paymentRepositoryMock = mock(PaymentRepository.class);
+        auctionRepositoryMock = mock(AuctionRepository.class);
     }
 
     @Test public void shouldChargeValueBeEqualToTheHigherBidOfAnAuction() throws Exception {
@@ -45,12 +49,10 @@ public class PaymentManagerTest {
                         .Bid(ANOTHER_VALID_USER, HIGHER_BID_AMOUNT)
                         .build();
 
-        final PaymentRepository paymentRepositoryMock = mock(PaymentRepository.class);
-
-        final AuctionRepository auctionRepositoryMock = mock(AuctionRepository.class);
         when(auctionRepositoryMock.closeds()).thenReturn(Arrays.asList(closedAuction1));
+        when(auctioneerMock.getGreaterBid()).thenReturn(HIGHER_BID_AMOUNT);
 
-        PaymentManager paymentManager = new PaymentManager(auctionRepositoryMock, auctioneer, paymentRepositoryMock);
+        PaymentManager paymentManager = new PaymentManager(auctionRepositoryMock, auctioneerMock, paymentRepositoryMock);
         paymentManager.manage();
 
         final ArgumentCaptor<Payment> captor = ArgumentCaptor.forClass(Payment.class);
