@@ -54,3 +54,5 @@ b
 ### v4.0 - Capturing arguments received by Mock
 
 #### Know to much about what was being tested could be not cool and break the encapsulation, but sometimes it's really necessary according to your testing process and granularity. For those cases, the Mockito framework provide us a captor called ArgumentCaptor that enable us to know not only if a method was called, but mainly what it's returning so we could test. Many authors defend that only public class should be test, but sometimes it isn't not enough.
+
+1. Our system has evolved, after we'd closed an Auction we have to receive the payment. Let's create a new class Payment, that receives the amount and date of it and keep it. Let's also create a new repository with a save(Payment payment) method. After that we'll need to create a PaymentManager class, with a method manage() that get all closed Auctions, and creates a payment for each one of them based on the higher bid (we can use an Auctioneer to evaluate and return the higher bid amount).
