@@ -64,7 +64,7 @@ public class PaymentManagerTest {
         assertThat(payment.getAmount(), equalTo(HIGHER_BID_AMOUNT));
     }
 
-    @Test public void shouldPostponeToTheNextWeekdayWhenAuctionWasClosedDuringTheWeekend() throws Exception {
+    @Test public void shouldPostponeToTheNextWeekdayWhenAuctionWasClosedSaturday() throws Exception {
         final Auction closedAuction1 =
                 new AuctionBuilder().to(ANY_VALID_AUCTION_NAME)
                         .Bid(VALID_USER, LOWER_BID_AMOUNT)
@@ -74,17 +74,39 @@ public class PaymentManagerTest {
         when(auctionRepositoryMock.closeds()).thenReturn(Arrays.asList(closedAuction1));
         when(auctioneerMock.getGreaterBid()).thenReturn(HIGHER_BID_AMOUNT);
 
-        final Clock clockMock = mock(Clock.class);
-        when(clockMock.today()).thenReturn(getCalendarForNext(Calendar.SATURDAY));
+        assertThatIsPostponed(Calendar.SATURDAY, Calendar.MONDAY);
+    }
 
-        PaymentManager paymentManager = new PaymentManager(auctionRepositoryMock, auctioneerMock, paymentRepositoryMock, clockMock);
+    @Test public void shouldPostponeToTheNextWeekdayWhenAuctionWasClosedSunday() throws Exception {
+        final Auction closedAuction1 =
+                new AuctionBuilder().to(ANY_VALID_AUCTION_NAME)
+                        .Bid(VALID_USER, LOWER_BID_AMOUNT)
+                        .Bid(ANOTHER_VALID_USER, HIGHER_BID_AMOUNT)
+                        .build();
+
+        when(auctionRepositoryMock.closeds()).thenReturn(Arrays.asList(closedAuction1));
+        when(auctioneerMock.getGreaterBid()).thenReturn(HIGHER_BID_AMOUNT);
+
+        assertThatIsPostponed(Calendar.SUNDAY, Calendar.MONDAY);
+    }
+
+    private void assertThatIsPostponed(int fromDayWeek, int toDayWeek) {
+        PaymentManager paymentManager =
+                new PaymentManager(auctionRepositoryMock, auctioneerMock, paymentRepositoryMock, createClockMockFor(fromDayWeek));
+
         paymentManager.manage();
 
         final ArgumentCaptor<Payment> captor = ArgumentCaptor.forClass(Payment.class);
         verify(paymentRepositoryMock).save(captor.capture());
 
         final Payment payment = captor.getValue();
-        assertThat(payment.getDate().get(Calendar.DAY_OF_WEEK), equalTo(Calendar.MONDAY));
+        assertThat(payment.getDate().get(Calendar.DAY_OF_WEEK), equalTo(toDayWeek));
+    }
+
+    private Clock createClockMockFor(int fromDayWeek) {
+        final Clock clockMock = mock(Clock.class);
+        when(clockMock.today()).thenReturn(getCalendarForNext(fromDayWeek));
+        return clockMock;
     }
 
     private Calendar getCalendarForNext(final int dayOfWeek) {
