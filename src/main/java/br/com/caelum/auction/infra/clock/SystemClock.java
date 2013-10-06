@@ -1,4 +1,4 @@
-package br.com.caelum.auction.infra;
+package br.com.caelum.auction.infra.clock;
 
 import java.util.Calendar;
 
