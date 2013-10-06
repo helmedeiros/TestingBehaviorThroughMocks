@@ -2,6 +2,8 @@ package br.com.caelum.auction.service;
 
 import br.com.caelum.auction.domain.Auction;
 import br.com.caelum.auction.domain.Payment;
+import br.com.caelum.auction.infra.Clock;
+import br.com.caelum.auction.infra.SystemClock;
 import br.com.caelum.auction.infra.dao.AuctionRepository;
 import br.com.caelum.auction.infra.dao.PaymentRepository;
 
@@ -18,11 +20,17 @@ public class PaymentManager {
     private AuctionRepository auctionRepository;
     private Auctioneer auctioneer;
     private PaymentRepository paymentRepository;
+    private Clock clock;
 
-    public PaymentManager(AuctionRepository auctionRepository, Auctioneer auctioneer, PaymentRepository paymentRepository) {
+    public PaymentManager(AuctionRepository auctionRepository, Auctioneer auctioneer, PaymentRepository paymentRepository, Clock clock) {
         this.auctionRepository = auctionRepository;
         this.auctioneer = auctioneer;
         this.paymentRepository = paymentRepository;
+        this.clock = clock;
+    }
+
+    public PaymentManager(AuctionRepository auctionRepository, Auctioneer auctioneer, PaymentRepository paymentRepository) {
+        this(auctionRepository, auctioneer, paymentRepository, new SystemClock());
     }
 
     public void manage(){
@@ -38,8 +46,8 @@ public class PaymentManager {
     }
 
     private Calendar nextUtilDate() {
-        final Calendar today = Calendar.getInstance();
-        Calendar nextUtilDate = Calendar.getInstance();
+        final Calendar today = clock.today();
+        Calendar nextUtilDate = clock.today();
 
         if(today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) nextUtilDate.add(Calendar.DAY_OF_MONTH, 2);
         else if(today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) nextUtilDate.add(Calendar.DAY_OF_MONTH, 1);
