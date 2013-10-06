@@ -4,6 +4,7 @@ import br.com.caelum.auction.builder.AuctionBuilder;
 import br.com.caelum.auction.domain.Auction;
 import br.com.caelum.auction.domain.Payment;
 import br.com.caelum.auction.domain.User;
+import br.com.caelum.auction.infra.clock.Clock;
 import br.com.caelum.auction.infra.dao.AuctionRepository;
 import br.com.caelum.auction.infra.dao.PaymentRepository;
 import org.junit.Before;
@@ -73,7 +74,10 @@ public class PaymentManagerTest {
         when(auctionRepositoryMock.closeds()).thenReturn(Arrays.asList(closedAuction1));
         when(auctioneerMock.getGreaterBid()).thenReturn(HIGHER_BID_AMOUNT);
 
-        PaymentManager paymentManager = new PaymentManager(auctionRepositoryMock, auctioneerMock, paymentRepositoryMock);
+        final Clock clockMock = mock(Clock.class);
+        when(clockMock.today()).thenReturn(getCalendarForNext(Calendar.SATURDAY));
+
+        PaymentManager paymentManager = new PaymentManager(auctionRepositoryMock, auctioneerMock, paymentRepositoryMock, clockMock);
         paymentManager.manage();
 
         final ArgumentCaptor<Payment> captor = ArgumentCaptor.forClass(Payment.class);
@@ -81,5 +85,11 @@ public class PaymentManagerTest {
 
         final Payment payment = captor.getValue();
         assertThat(payment.getDate().get(Calendar.DAY_OF_WEEK), equalTo(Calendar.MONDAY));
+    }
+
+    private Calendar getCalendarForNext(final int dayOfWeek) {
+        final Calendar today = Calendar.getInstance();
+        today.add(Calendar.DAY_OF_WEEK, dayOfWeek);
+        return today;
     }
 }

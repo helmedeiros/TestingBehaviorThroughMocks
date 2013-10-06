@@ -67,4 +67,4 @@ Below are all tags, and what is being expected to be done.
 
 1. We have a new requirement, the payment date should be postponed to monday if the closing happens over the weekend. Implement that.
 
-2. Now imagine that you're trying to made this tests pass, but actually today wasn't a weekend's day. Our production code has a dependency with the static method getInstance from PaymentManager business rule, and we couldn't mock that to test specific days. Now create a Clock abstraction, and a concrete class SystemClock, and make the class PaymentManager make use of it. Check if all test still passing.
+2. Now imagine that you're trying to made this tests pass, but actually today wasn't a weekend's day. Our production code has a dependency with the static method getInstance from PaymentManager business rule, and we couldn't mock that to test specific days. Now create a Clock abstraction, and a concrete class SystemClock, and make the class PaymentManager make use of it. Check if all test still passing. Use mocks to test Saturday and Sunday cases.
