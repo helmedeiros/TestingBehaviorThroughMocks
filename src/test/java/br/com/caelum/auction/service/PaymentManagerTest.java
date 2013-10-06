@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
+import java.util.Calendar;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -60,5 +61,25 @@ public class PaymentManagerTest {
 
         final Payment payment = captor.getValue();
         assertThat(payment.getAmount(), equalTo(HIGHER_BID_AMOUNT));
+    }
+
+    @Test public void shouldPostponeToTheNextWeekdayWhenAuctionWasClosedDuringTheWeekend() throws Exception {
+        final Auction closedAuction1 =
+                new AuctionBuilder().to(ANY_VALID_AUCTION_NAME)
+                        .Bid(VALID_USER, LOWER_BID_AMOUNT)
+                        .Bid(ANOTHER_VALID_USER, HIGHER_BID_AMOUNT)
+                        .build();
+
+        when(auctionRepositoryMock.closeds()).thenReturn(Arrays.asList(closedAuction1));
+        when(auctioneerMock.getGreaterBid()).thenReturn(HIGHER_BID_AMOUNT);
+
+        PaymentManager paymentManager = new PaymentManager(auctionRepositoryMock, auctioneerMock, paymentRepositoryMock);
+        paymentManager.manage();
+
+        final ArgumentCaptor<Payment> captor = ArgumentCaptor.forClass(Payment.class);
+        verify(paymentRepositoryMock).save(captor.capture());
+
+        final Payment payment = captor.getValue();
+        assertThat(payment.getDate().get(Calendar.DAY_OF_WEEK), equalTo(Calendar.MONDAY));
     }
 }

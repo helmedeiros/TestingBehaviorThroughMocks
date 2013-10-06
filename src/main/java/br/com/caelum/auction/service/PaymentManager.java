@@ -31,10 +31,20 @@ public class PaymentManager {
         for (Auction closedAuction : closedAuctions) {
             auctioneer.evaluate(closedAuction);
 
-            Payment payment = new Payment(auctioneer.getGreaterBid(), Calendar.getInstance());
+            Payment payment = new Payment(auctioneer.getGreaterBid(), nextUtilDate());
             paymentRepository.save(payment);
         }
 
+    }
+
+    private Calendar nextUtilDate() {
+        final Calendar today = Calendar.getInstance();
+        Calendar nextUtilDate = Calendar.getInstance();
+
+        if(today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) nextUtilDate.add(Calendar.DAY_OF_MONTH, 2);
+        else if(today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) nextUtilDate.add(Calendar.DAY_OF_MONTH, 1);
+
+        return nextUtilDate;
     }
 
 
