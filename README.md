@@ -22,7 +22,7 @@ Below are all tags, and what is being expected to be done.
 3. What happens when there's no auction open to be closed. Let's use the mocks to test this?
 
 4. Most of mock frameworks only mock based on interfaces. Mockito also works with class, are we missing something mocking our DAO class directly? And if this implementation had changes, what happens with our tests? Could we fix that? Extract a common interface for both AuctionDao an AuctionDaoFake, and changed it all over our tests to use this interface instead.
-b
+
 ### v2.0 - Ensuring that the methods were invoked
 
 #### The Mockito framework also allows us to check whether and how many times a particular method is called. This could be done using the pair verify() and times(). Let's see how to work more this feature. It's very important to remember that our tests should focus only on the expected behavior, not the current implementation. Use the verify only im parts of your could that are actually part of the business rules. Take care to not break the encapsulation and end up with really brittle tests that have to be changed all the time.
@@ -60,3 +60,7 @@ b
 2. Let's test our PaymentManager. Write a test to ensure that the payment amount generated is equal to the highest bidder evaluated by the Auctioneer. Note that the generated charge is not returned to the test. To be able to test, we need to use the Mockito's ArgumentCaptor.
 
 3. In the previous test you could mock or not the Auctioneer. Why should you mock it? Think about and chose the best way to test it.
+
+### v5.0 - Isolating for testing
+
+#### Sometimes our code over testing had dependencies with static classes or static methods, and we weren't able to mock then. In this session we'll check how to isolate something using abstractions and interfaces to test it.
