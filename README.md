@@ -1,4 +1,4 @@
-TestingBehaviorThroughMocks
+Testing Behavior Through Mocks
 ===========================
 
 Second steps for TDD learners
